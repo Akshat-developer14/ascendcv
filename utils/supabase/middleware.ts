@@ -33,20 +33,26 @@ export async function updateSession(request: NextRequest) {
     // supabase.auth.getUser(). A simple mistake could make it very hard to debug
     // issues with users being randomly logged out.
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    try {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser()
 
-    if (
-        !user &&
-        !request.nextUrl.pathname.startsWith('/sign-in') &&
-        !request.nextUrl.pathname.startsWith('/sign-up') &&
-        request.nextUrl.pathname !== '/'
-    ) {
-        // no user, potentially respond by redirecting the user to the login page
-        // const url = request.nextUrl.clone()
-        // url.pathname = '/sign-in'
-        // return NextResponse.redirect(url)
+        if (
+            !user &&
+            !request.nextUrl.pathname.startsWith('/sign-in') &&
+            !request.nextUrl.pathname.startsWith('/sign-up') &&
+            request.nextUrl.pathname !== '/'
+        ) {
+            // no user, potentially respond by redirecting the user to the login page
+            // const url = request.nextUrl.clone()
+            // url.pathname = '/sign-in'
+            // return NextResponse.redirect(url)
+        }
+    } catch (error) {
+        // Handle auth errors gracefully (e.g., during Supabase restarts)
+        console.error('Auth error in middleware:', error)
+        // Continue without blocking the request
     }
 
     return supabaseResponse

@@ -19,16 +19,18 @@ import { useState } from "react";
 
 export default function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
+        setError(null);
         const formData = new FormData(event.currentTarget);
         const result = await signInAction(formData);
         setIsLoading(false);
 
         if (result?.error) {
-            alert(result.error);
+            setError(result.error);
         }
     };
 
@@ -47,6 +49,11 @@ export default function SignIn() {
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
                     <CardContent className="grid gap-4">
+                        {error && (
+                            <div className="text-sm text-red-500 bg-red-50 p-2 rounded border border-red-200">
+                                {error}
+                            </div>
+                        )}
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input

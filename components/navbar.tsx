@@ -20,6 +20,16 @@ export async function Navbar() {
                         <span className="text-xl font-bold">AscendCV</span>
                     </Link>
                     <div className="flex items-center gap-4">
+                        {user && (
+                            <>
+                                <Link href="/resumes">
+                                    <Button variant="ghost">My Resumes</Button>
+                                </Link>
+                                <Link href="/resumes/new">
+                                    <Button variant="outline">Create Resume</Button>
+                                </Link>
+                            </>
+                        )}
                         <ModeToggle />
                         {user ? (
                             <form action={signOutAction}>
