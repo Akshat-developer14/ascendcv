@@ -95,19 +95,43 @@ export default async function ResumeDetailPage({
             {resume.website && (
               <div className="flex items-center gap-1">
                 <Globe className="h-3 w-3" />
-                <a href={resume.website} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">Website</a>
+                <a href={resume.website} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+                  {(() => {
+                    try {
+                      return new URL(resume.website).hostname.replace(/^www\./, '');
+                    } catch {
+                      return resume.website;
+                    }
+                  })()}
+                </a>
               </div>
             )}
             {resume.linkedin_url && (
               <div className="flex items-center gap-1">
                 <Linkedin className="h-3 w-3" />
-                <a href={resume.linkedin_url} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">LinkedIn</a>
+                <a href={resume.linkedin_url} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+                  {(() => {
+                    try {
+                      return new URL(resume.linkedin_url).hostname.replace(/^www\./, '');
+                    } catch {
+                      return "LinkedIn";
+                    }
+                  })()}
+                </a>
               </div>
             )}
             {resume.github_url && (
               <div className="flex items-center gap-1">
                 <Github className="h-3 w-3" />
-                <a href={resume.github_url} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">GitHub</a>
+                <a href={resume.github_url} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+                  {(() => {
+                    try {
+                      return new URL(resume.github_url).hostname.replace(/^www\./, '');
+                    } catch {
+                      return "GitHub";
+                    }
+                  })()}
+                </a>
               </div>
             )}
           </div>
@@ -209,17 +233,22 @@ export default async function ResumeDetailPage({
             <h2 className="text-lg font-bold uppercase tracking-wider border-b border-slate-300 mb-3 pb-1">
               Skills
             </h2>
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-4">
               {Object.entries(
                 resume.skills.reduce((acc, skill) => {
+                  if (!skill.skill_name) return acc;
                   if (!acc[skill.category]) acc[skill.category] = [];
                   acc[skill.category].push(skill.skill_name);
                   return acc;
                 }, {} as Record<string, string[]>)
               ).map(([category, skills]) => (
                 <div key={category} className="text-sm">
-                  <span className="font-bold text-slate-900 mr-2">{category}:</span>
-                  <span className="text-slate-700">{skills.join(", ")}</span>
+                  <h3 className="font-bold text-slate-900 mb-1">{category}</h3>
+                  <ul className="list-disc list-outside ml-4 space-y-1">
+                    {skills.map((skill, idx) => (
+                      <li key={idx} className="text-slate-700">{skill}</li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
